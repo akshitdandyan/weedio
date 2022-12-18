@@ -1,30 +1,36 @@
+export type Feature = "video-reduce-size" | "video-trim" | "not-choosen";
+
 type Media =
   | {
       type: "photo";
       mime: "string";
       fileId: string;
       fileUniqueId: string;
-      fileName:string;
+      fileName: string;
       size: number;
-      location:string;
+      inputLocation: string;
+      outputLocation?: string;
     }
   | {
       type: "video";
       mime: "string";
       fileId: string;
       fileUniqueId: string;
-      fileName:string;
+      fileName: string;
       size: number;
-      location:string;
+      inputLocation: string;
+      outputLocation?: string;
       duration: number;
     };
 
 interface Client {
   id: string;
-  teleId: string;
-  firstName: string;
+  teleId: number;
+  firstName?: string;
   username: string;
-  media: Media;
+  media?: Media;
+  feature: Feature;
+  options?: string[];
   status:
     | "joined"
     | "media-recieved"
@@ -39,6 +45,11 @@ class Clients {
   _clients: Client[] = [];
   constructor() {
     this._clients = [];
+  }
+
+  _debug() {
+    return;
+    console.log("\nclients:", this._clients, "\n");
   }
 
   _exists(username: string) {
@@ -56,10 +67,44 @@ class Clients {
     }
     this._clients.push(client);
     console.log("✅ New client added:", `[@${client.username}]`);
+    this._debug();
   }
 
-  upsert(client:Client){
+  attachMedia(username: string, media: Media) {
+    const client = this._exists(username);
+    if (client) {
+      client.media = media;
+      console.log("✅ media attached to client:", `[@${username}]`);
+      this._debug();
+      return;
+    }
+    console.log("❌ client not in queue:", `[@${username}]`);
+  }
 
+  attachOptions(username: string, options: string[]) {
+    const client = this._exists(username);
+    if (client) {
+      client.options = options;
+      console.log("✅ options attached to client:", `[@${username}]`);
+      this._debug();
+      return;
+    }
+    console.log("❌ client not in queue:", `[@${username}]`);
+  }
+
+  attachOutputLocation(username: string, outputLocation: string) {
+    const client = this._exists(username);
+    if (client) {
+      if (client.media) {
+        client.media.outputLocation = outputLocation;
+        console.log("✅ outputLocation attached to client:", `[@${username}]`);
+        this._debug();
+        return;
+      }
+      console.log("❌ client has no media:", `[@${username}]`);
+      return;
+    }
+    console.log("❌ client not in queue:", `[@${username}]`);
   }
 
   get(username: string) {
@@ -76,6 +121,8 @@ class Clients {
     if (client) {
       this._clients = this._clients.filter((c) => c.username !== username);
       console.log("🫧 client removed from queue", `@[${username}]`);
+
+      this._debug();
       return client;
     }
     console.log("❌ client not in queue:", `[@${username}]`);
