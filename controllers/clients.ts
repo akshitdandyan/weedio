@@ -4,14 +4,18 @@ type Media =
       mime: "string";
       fileId: string;
       fileUniqueId: string;
+      fileName:string;
       size: number;
+      location:string;
     }
   | {
       type: "video";
       mime: "string";
       fileId: string;
       fileUniqueId: string;
+      fileName:string;
       size: number;
+      location:string;
       duration: number;
     };
 
@@ -55,7 +59,7 @@ class Clients {
   }
 
   upsert(client:Client){
-    
+
   }
 
   get(username: string) {

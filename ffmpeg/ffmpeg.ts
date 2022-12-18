@@ -1,6 +1,7 @@
 import axios from 'axios';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
+import { getBitrate, mediaOutputPath } from '../helpers/helpers';
 
 async function saveVideo() {
     const res = await axios.get(
@@ -64,4 +65,24 @@ export async function addText(){
     })
     // save to file
     .save('./withText.mp4');
+}
+
+export async function reduceSize(fileLocation:string, fileName:string,size:number){
+    console.log("[ffmpeg] reduceSize: fileLocation:", fileLocation)
+    console.log("[ffmpeg] reduceSize: size:", size)
+    const bitrate = getBitrate(size);
+    const outputPath = mediaOutputPath(fileName);
+    await new Promise((resolve, reject) => {
+        ffmpeg(fileLocation)
+        .outputOptions(['-c:v libx264',`-b:v ${bitrate}k`,'-c:a aac','-b:a 58k'])
+        .output(outputPath)
+        .on('start',(cmd) => {
+            console.log("[ffmpeg] cmd:", cmd)
+        })
+        .on('error', (error) => reject(error))
+        .on('end', () => resolve('Done'))
+        .run();
+    });
+    console.log('[ffmpeg.ts] ✅ Done with reducing size');
+    return outputPath;
 }
