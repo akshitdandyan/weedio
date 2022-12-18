@@ -1,4 +1,10 @@
-export type Feature = "video-reduce-size" | "video-trim" | "not-choosen";
+export type Feature =
+  | "video-reduce-size"
+  | "video-trim"
+  | "remove-audio"
+  | "extract-music"
+  | "playback-speed"
+  | "not-choosen";
 
 type Media =
   | {

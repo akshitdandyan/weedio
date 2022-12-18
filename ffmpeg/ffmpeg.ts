@@ -106,18 +106,79 @@ export async function trimVideo(payload: {
   startTime: number;
   endTime: number;
 }) {
-    console.log("[ffmpeg.ts] trimVideo: payload:", payload)
+  console.log("[ffmpeg.ts] trimVideo: payload:", payload);
   const outputPath = mediaOutputPath(payload.fileName);
 
   await new Promise((resolve, reject) => {
     ffmpeg(payload.fileLocation)
       .setStartTime(payload.startTime)
       .setDuration(payload.endTime)
-      .on('start', () => console.log("➡️ video trimming started..."))
-      .on('end', () => resolve('✅ Video trimmed'))
-      .on('error', () => reject('❌ Error in video trimming'))
-      .save(outputPath)
+      .on("start", () => console.log("➡️ video trimming started..."))
+      .on("end", () => resolve("✅ Video trimmed"))
+      .on("error", () => reject("❌ Error in video trimming"))
+      .save(outputPath);
   });
 
+  return outputPath;
+}
+
+export async function removeAudio(payload: {
+  fileLocation: string;
+  fileName: string;
+}) {
+  console.log("[ffmpeg.ts] removeAudio: payload:", payload);
+  const outputPath = mediaOutputPath(payload.fileName);
+
+  await new Promise((resolve, reject) => {
+    ffmpeg(payload.fileLocation)
+      .noAudio()
+      .on("start", () => console.log("➡️ removing audio started..."))
+      .on("end", () => resolve("✅ Audio removed"))
+      .on("error", () => reject("❌ Error in removing audio"))
+      .save(outputPath);
+  });
+
+  return outputPath;
+}
+
+
+export async function extractAudio(payload: {
+  fileLocation: string;
+  fileName: string;
+}) {
+  console.log("[ffmpeg.ts] removeAudio: payload:", payload);
+  const outputPath = mediaOutputPath(payload.fileName,true);
+
+  await new Promise((resolve, reject) => {
+    ffmpeg(payload.fileLocation)
+      .noVideo()
+      .format('mp3')
+      .on("start", () => console.log("➡️ extracting audio started..."))
+      .on("end", () => resolve("✅ Audio extracted"))
+      .on("error", () => reject("❌ Error in extracting audio"))
+      .save(outputPath);
+  });
+
+  return outputPath;
+}
+
+export async function modifySpeed(
+  payload:{fileLocation: string,
+  fileName: string,
+  pts:"0.5"|"0.25"|"0.25"|"2"}
+) {
+  console.log("[ffmpeg] modifySpeed: fileLocation:", payload.fileLocation);
+  const outputPath = mediaOutputPath(payload.fileName);
+
+  await new Promise((resolve, reject) => {
+    ffmpeg(payload.fileLocation)
+      .outputOptions([
+        "-filter:v", `setpts=${payload.pts}*PTS`
+      ])
+      .on("error", (error) => reject(error))
+      .on("end", () => resolve("Done"))
+      .save(outputPath);
+  });
+  console.log("[ffmpeg.ts] ✅ Done with reducing size");
   return outputPath;
 }

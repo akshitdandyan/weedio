@@ -10,18 +10,44 @@ import {
   removeFile,
   videoExceedsSizeLimit,
 } from "../helpers/helpers";
-import { reduceSize, trimVideo } from "../ffmpeg/ffmpeg";
+import {
+  extractAudio,
+  modifySpeed,
+  reduceSize,
+  removeAudio,
+  trimVideo,
+} from "../ffmpeg/ffmpeg";
 import { VIDEO_FEATURES } from "../@config/constants";
 import clients from "./clients";
 
 teleBot.on("message", (message) => {
-  console.log("[telegramControllers.js] Recieved message:", message.text)
-  if(!message.text){
+  console.log("[telegramControllers.js] Recieved message:", message.text);
+  if (!message.text) {
     return;
   }
   if (message.text === "/start") {
     teleBot.setMyCommands([
       { command: "/start", description: "Start with us" },
+      {
+        command: "/" + VIDEO_FEATURES.reduceSize,
+        description: "Reduce video file size with ulta compression",
+      },
+      {
+        command: "/" + VIDEO_FEATURES.trimVideo,
+        description: "Trim video within a time range",
+      },
+      {
+        command: "/" + VIDEO_FEATURES.removeAudio,
+        description: "Remove audio from video",
+      },
+      {
+        command: "/" + VIDEO_FEATURES.extractAudio,
+        description: "Get music from video",
+      },
+      {
+        command: "/" + VIDEO_FEATURES.modifySpeed,
+        description: "Modify payback speed of video",
+      },
     ]);
     teleBot.sendMessage(
       message.chat.id,
@@ -42,12 +68,25 @@ teleBot.on("message", (message) => {
                 text: VIDEO_FEATURES.reduceSize,
               },
             ],
+            [
+              {
+                text: VIDEO_FEATURES.removeAudio,
+              },
+              {
+                text: VIDEO_FEATURES.extractAudio,
+              },
+            ],
+            [
+              {
+                text: VIDEO_FEATURES.modifySpeed,
+              },
+            ],
           ],
         },
       }
     );
   } else if (isFeature(message.text)) {
-    console.log("[telegramControllers.js] client sent feature details")
+    console.log("[telegramControllers.js] client sent feature details");
     const { replyMessage, featureType } = handleFeatureReply(message.text);
 
     clients.add({
@@ -60,12 +99,12 @@ teleBot.on("message", (message) => {
     });
 
     teleBot.sendMessage(message.chat.id, replyMessage);
-  }else{
-    console.log("[telegramControllers.js] client may have sent options")
+  } else {
+    console.log("[telegramControllers.js] client may have sent options");
     const optionRes = isOption(message.text);
     teleBot.sendMessage(message.chat.id, optionRes.message);
     if (optionRes.success) {
-      clients.attachOptions(message.chat.username,optionRes.options )
+      clients.attachOptions(message.chat.username, optionRes.options);
     }
   }
 });
@@ -74,8 +113,11 @@ teleBot.on("video", async (res) => {
   console.log("[telegramControllers.js] video", res);
 
   if (res.video && res.video.file_id) {
-    if(videoExceedsSizeLimit(res.video.file_size)){
-      teleBot.sendMessage(res.chat.id, 'We are at very early stage, cannot afford to process files larger than 15 MB in size as of now.😶‍🌫️')
+    if (videoExceedsSizeLimit(res.video.file_size)) {
+      teleBot.sendMessage(
+        res.chat.id,
+        "We are at very early stage, cannot afford to process files larger than 15 MB in size as of now.😶‍🌫️"
+      );
       return;
     }
     const client = clients.get(res.chat.username);
@@ -124,19 +166,45 @@ teleBot.on("video", async (res) => {
           endTime: 4,
         });
         caption = "✅ Video Trimmed";
+      } else if (client.feature === "remove-audio") {
+        outputPath = await removeAudio({
+          fileLocation: mediaStoragePath,
+          fileName: fileName,
+        });
+        caption = "✅ Audio Removed";
+      } else if (client.feature === "extract-music") {
+        outputPath = await extractAudio({
+          fileLocation: mediaStoragePath,
+          fileName: fileName,
+        });
+        caption = "✅ Music extracted";
+      } else if (client.feature === "playback-speed") {
+        outputPath = await modifySpeed({
+          fileLocation: mediaStoragePath,
+          fileName: fileName,
+          pts: "0.25",
+        });
+        caption = "✅ Playback speed modified";
       } else {
         // TODO: handle if feature not chosen
         return;
       }
 
-      clients.attachOutputLocation(res.chat.username,outputPath);
+      clients.attachOutputLocation(res.chat.username, outputPath);
 
       console.log("⬆️Sending output to client...");
       const outputStream = createReadStream(outputPath);
-      await teleBot.sendVideo(res.chat.id, outputStream, {
-        caption,
-      });
-      console.log('✅ Processed file sent to client')
+      if (outputPath.includes("mp3")) {
+        await teleBot.sendAudio(res.chat.id, outputStream, {
+          caption,
+        });
+      } else {
+        await teleBot.sendVideo(res.chat.id, outputStream, {
+          caption,
+        });
+      }
+
+      console.log("✅ Processed file sent to client");
       clients.remove(client.username);
       removeFile(client.media.inputLocation);
       removeFile(client.media.outputLocation);

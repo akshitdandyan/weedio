@@ -1,6 +1,9 @@
 export const VIDEO_FEATURES = {
     reduceSize:"Reduce Video Size 🪶",
-    trimVideo:"Trim Video ✂️"
+    trimVideo:"Trim Video ✂️",
+    removeAudio:"Remove Audio 🔇",
+    extractAudio:"Extract Music 🎵",
+    modifySpeed:"Playback Speed 🐌"
 }
 
 export const videoMimeTypes = {

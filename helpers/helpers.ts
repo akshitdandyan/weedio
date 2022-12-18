@@ -16,12 +16,16 @@ export const newMediaStoragePath = (filename: string) => {
   )}`;
 };
 
-export const mediaOutputPath = (filename: string) => {
+export const mediaOutputPath = (filename: string, isAudio = false) => {
   if (!existsSync("./server-media")) {
-    mkdirSync("./server-media");
+      mkdirSync("./server-media");
   }
-  return `./server-media/${filename}`;
+  if (!isAudio) {
+      return `./server-media/${filename}`;
+  }
+  return `./server-media/${filename.replace(".mp4", ".mp3")}`;
 };
+
 
 export const getBitrate = (bytes: number) => {
   const diff = Math.floor(bytes / 1000000);
@@ -54,6 +58,19 @@ export function handleFeatureReply(command: string) {
         "Okay, please type the start and end duration in seconds.\nFor example, if you want to trim a video from 2s to 6s, type 2 6";
       needReply = true;
       featureType = "video-trim";
+      break;
+    case VIDEO_FEATURES.removeAudio:
+      replyMessage = "Okay, send the video which needs to be muted 🔇";
+      featureType = "remove-audio";
+      break;
+    case VIDEO_FEATURES.extractAudio:
+      replyMessage = "Okay, send the video from which you want to extract music 🎵";
+      featureType = "extract-music";
+      break;
+    case VIDEO_FEATURES.modifySpeed:
+      replyMessage = "Okay, send the video whose playback speed you want to modify ⌛.";
+      featureType = "playback-speed";
+      needReply = true;
       break;
     default:
       replyMessage = "Woops! Please choose only from given options.";
