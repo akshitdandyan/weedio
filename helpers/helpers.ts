@@ -110,8 +110,8 @@ export function isOption(reply: string) {
           "🙄Umm, that's not enough to proceed with. Please write both start and end duration in following format: \n\n 5 10",
       };
     }
-    const startTime = splitted[0];
-    const endTime = splitted[splitted.length - 1];
+    const startTime = Number(splitted[0]);
+    const endTime = Number(splitted[splitted.length - 1]);
     if (startTime >= endTime) {
       return {
         success: false,
@@ -122,7 +122,7 @@ export function isOption(reply: string) {
     return {
       success: true,
       message: "Amazing! Send the video now🤩",
-      options:[startTime,endTime]
+      options:[startTime.toString(),endTime.toString()]
     };
   } catch (error) {
     console.log("[helpers.ts] isOption error", error)
