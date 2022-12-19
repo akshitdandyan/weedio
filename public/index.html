@@ -8,34 +8,176 @@
         <!-- <link rel="stylesheet" href="./stylesheets/style.css" /> -->
         <link rel="stylesheet" href="./stylesheets/util.css" />
         <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+            integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
     </head>
     <body>
         <div
-            class="h-full w-full fixed top-0 left-0 bg-gradient-to-r from-black to-violet-900 via-black"
+            class="h-full w-full flex fixed top-0 left-0 bg-gradient-to-r from-black to-violet-900 via-black"
         >
-            <div class="h-40 w-40 absolute"></div>
-            <div class="grid grid-cols-2 p-4">
+            <div class="sm:grid grid-cols-2 p-4">
                 <div>
-                    <div class="logo"></div>
-                    <p class="text-emerald-300 text-3xl font-bold">
+                    <div class="logo animate-pulse"></div>
+                    <p
+                        class="text-emerald-300 text-3xl font-bold text-center sm:text-start"
+                    >
                         Open source Telegram bot for video manipulation.
                     </p>
-                    <div>
-                        <div class="text-emerald-100 mt-5 font-bold">
-                            Features
-                        </div>
-                        <ul
-                            class="text-white text-lg font-semibold list-disc pl-6"
+                    <div
+                        class="flex justify-evenly sm:justify-start gap-6 items-center mt-6"
+                    >
+                        <a href="https://t.me/WeedioBot">
+                            <button
+                                class="bg-emerald-300 text-black font-bold py-2 px-4 rounded-full"
+                            >
+                                Go To Bot
+                                <i class="fa-brands fa-telegram"></i>
+                            </button>
+                        </a>
+                        <div
+                            id="copy-btn"
+                            onclick="copyToClipboard('t.me/WeedioBot')"
+                            class="bg-white cursor-pointer ring-inset ring-1 duration-100 active:ring-2 hover:bg-opacity-0 bg-opacity-10 text-white rounded-full flex items-center gap-6 py-2 px-4 font-bold relative z-10"
                         >
-                            <li class="my-2">Trim Video ✂️</li>
-                            <li class="my-2">Reduce Video Size 🪶</li>
-                            <li class="my-2">Remove Audio 🔇</li>
-                            <li class="my-2">Extact Music 🎵</li>
-                            <li class="my-2">Playback Speed 🐌</li>
-                        </ul>
+                            <div>t.me/WeedioBot</div>
+                            <i class="block fa-solid fa-copy"></i>
+                        </div>
+                        <div
+                            id="copy-msg"
+                            class="bg-white cursor-pointer animate-bounce ring-inset ring-1 ring-emerald-400 duration-100 bg-opacity-10 text-emerald-300 rounded-full hidden items-center gap-6 py-2 px-4 font-bold relative z-10"
+                        >
+                            <div>Bot link copied</div>
+                            <i class="block fa-solid fa-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative sm:grid grid-cols-2 gap-9 mt-4 sm:mt-0">
+                    <div class="relative">
+                        <img
+                            src="./media/demo.png"
+                            alt="Demo Chat"
+                            class="sm:hidden absolute opacity-25 h-[60vh] -right-10 -top-14 rounded-lg shadow-lg shadow-black"
+                        />
+                        <div
+                            class="bg-gray-900 rounded-lg shadow-black shadow-lg py-4 px-8 h-max z-10 relative bg-opacity-30 sm:bg-opacity-100"
+                        >
+                            <div class="text-emerald-100 font-bold">
+                                Features
+                            </div>
+                            <ul
+                                class="text-white text-lg font-semibold list-disc pl-6"
+                            >
+                                <li class="my-2">Trim Video ✂️</li>
+                                <li class="my-2">Reduce Video Size 🪶</li>
+                                <li class="my-2">Remove Audio 🔇</li>
+                                <li class="my-2">Extact Music 🎵</li>
+                                <li class="my-2">Playback Speed 🐌</li>
+                                <a
+                                    class="text-emerald-300 duration-200 hover:text-purple-300"
+                                    href="https://github.com/akshitdandyan/weedio"
+                                    >Develop more 💡</a
+                                >
+                            </ul>
+                        </div>
+                        <div
+                            class="bg-gray-900 rounded-lg shadow-black shadow-lg py-4 px-8 h-max mt-6 text-white text-2xl flex justify-evenly items-center relative z-10 bg-opacity-60 sm:bg-opacity-100"
+                        >
+                            <i class="block fa-brands fa-node-js"></i>
+                            <i class="block fa-brands fa-telegram"></i>
+                            <i class="block fa-solid fa-file-video"></i>
+                            <i class="block fa-solid fa-music"></i>
+                            <i class="block fa-solid fa-sliders"></i>
+                            <i class="block fa-sharp fa-solid fa-timer"></i>
+                        </div>
+                        <div
+                            class="bg-gray-900 rounded-lg shadow-black shadow-lg py-4 px-8 h-max mt-6 text-white text-2xl grid grid-cols-3 gap-2 relative z-10 bg-opacity-80 sm:bg-opacity-100"
+                        >
+                            <a
+                                target="_blank"
+                                class="bg-gray-500 rounded-lg p-2 text-center"
+                                href="http://t.me/WeedioBot"
+                            >
+                                <i class="fa-brands fa-telegram"></i>
+                                <div class="text-emerald-300 text-sm">
+                                    Go To Bot
+                                </div>
+                            </a>
+                            <a
+                                target="_blank"
+                                class="bg-gray-500 rounded-lg p-2 text-center"
+                                href="https://github.com/akshitdandyan/weedio"
+                            >
+                                <i class="fa-brands fa-github"></i>
+                                <div class="text-emerald-300 text-sm">
+                                    Source Code
+                                </div>
+                            </a>
+                            <a
+                                target="_blank"
+                                class="bg-gray-500 rounded-lg p-2 text-center"
+                                href="https://replit.com/@AkshitDandyan/weedio"
+                            >
+                                <div
+                                    class="grid grid-cols-2 w-max mx-auto mt-2"
+                                >
+                                    <div>
+                                        <div
+                                            class="w-2 h-2 bg-orange-500"
+                                        ></div>
+                                        <div class="w-2 h-2"></div>
+                                        <div
+                                            class="w-2 h-2 bg-orange-500"
+                                        ></div>
+                                    </div>
+                                    <div>
+                                        <div class="w-2 h-2"></div>
+                                        <div
+                                            class="w-2 h-2 bg-orange-500"
+                                        ></div>
+                                    </div>
+                                </div>
+                                <div class="text-emerald-300 text-sm">
+                                    Replit
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div>
+                        <video
+                            class="h-[80%] rounded-lg shadow-black shadow-lg hidden sm:block"
+                            src="./media/demo.mp4"
+                            muted
+                            autoplay
+                            loop
+                        ></video>
                     </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            function copyToClipboard(text) {
+                const copyBtn = document.getElementById("copy-btn");
+                const copyMsg = document.getElementById("copy-msg");
+                copyBtn.classList.remove("flex");
+                copyBtn.classList.add("hidden");
+                copyMsg.classList.remove("hidden");
+                copyMsg.classList.add("flex");
+                navigator.clipboard.writeText(text);
+                setTimeout(() => {
+                    copyBtn.classList.remove("hidden");
+                    copyBtn.classList.add("flex");
+                    copyMsg.classList.remove("flex");
+                    copyMsg.classList.add("hidden");
+                }, 2000);
+            }
+        </script>
     </body>
 </html>
