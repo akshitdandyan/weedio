@@ -2,7 +2,7 @@ import axios from "axios";
 import ffmpeg from "fluent-ffmpeg";
 import {path} from '@ffmpeg-installer/ffmpeg';
 import fs from "fs";
-import { getBitrate, mediaOutputPath } from "../helpers/helpers";
+import { formatSecondsIntoHHMMSS, getBitrate, mediaOutputPath } from "../helpers/helpers";
 
 ffmpeg.setFfmpegPath(path);
 
@@ -116,8 +116,8 @@ export async function trimVideo(payload: {
 
   await new Promise((resolve, reject) => {
     ffmpeg(payload.fileLocation)
-      .setStartTime(payload.startTime)
-      .setDuration(payload.endTime)
+      .setStartTime(formatSecondsIntoHHMMSS(payload.startTime))
+      .setDuration(payload.endTime - payload.startTime)
       .on("start", () => console.log("➡️ video trimming started..."))
       .on("end", () => resolve("✅ Video trimmed"))
       .on("error", (error) =>{
