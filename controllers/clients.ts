@@ -91,7 +91,7 @@ class Clients {
     const client = this._exists(username);
     if (client) {
       client.options = options;
-      console.log("✅ options attached to client:", `[@${username}]`);
+      console.log("✅ options attached to client:", `[@${username}]:`, client.options);
       this._debug();
       return;
     }
