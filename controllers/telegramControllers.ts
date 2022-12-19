@@ -158,12 +158,12 @@ teleBot.on("video", async (res) => {
           res.video.file_size
         );
         caption = "✅ Video size reduced";
-      } else if (client.feature === "video-trim") {
+      } else if (client.feature === "video-trim" && client.options.length===2) {
         outputPath = await trimVideo({
           fileLocation: mediaStoragePath,
           fileName: fileName,
-          startTime: 0,
-          endTime: 4,
+          startTime: Number(client.options[0]),
+          endTime: Number(client.options[1]),
         });
         caption = "✅ Video Trimmed";
       } else if (client.feature === "remove-audio") {
