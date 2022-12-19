@@ -1,7 +1,10 @@
 import axios from "axios";
 import ffmpeg from "fluent-ffmpeg";
+import {path} from '@ffmpeg-installer/ffmpeg';
 import fs from "fs";
 import { getBitrate, mediaOutputPath } from "../helpers/helpers";
+
+ffmpeg.setFfmpegPath(path);
 
 async function saveVideo() {
   const res = await axios.get(
