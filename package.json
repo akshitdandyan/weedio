@@ -4,9 +4,9 @@
     "description": "Command to run index.js file:",
     "main": "index.js",
     "scripts": {
-        "start-app": "node --experimental-modules --es-module-specifier-resolution=node ./lib/index.js",
+        "start": "node --experimental-modules --es-module-specifier-resolution=node ./lib/index.js",
         "lt": "lt --port 3000 --subdomain wedio",
-        "start": "tsc && npm start-app"
+        "dev": "tsc && npm start"
     },
     "author": "akshitdandyan",
     "license": "MIT",
