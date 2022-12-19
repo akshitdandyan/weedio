@@ -35,7 +35,13 @@ export const getBitrate = (bytes: number) => {
   return Math.floor(diff * 28 * 1.1);
 };
 
-
+export const formatSecondsIntoHHMMSS = (seconds: number) => {
+  const date = new Date(seconds * 1000);
+  const hh = date.getUTCHours();
+  const mm = date.getUTCMinutes();
+  const ss = date.getSeconds();
+  return `${hh}:${mm}:${ss}`;
+};
 
 export const getMimeType = (filename:string) => {
     const fileExtension = filename.split('.').pop();
