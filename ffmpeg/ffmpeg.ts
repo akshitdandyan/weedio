@@ -92,8 +92,10 @@ export async function reduceSize(
       .on("start", (cmd) => {
         console.log("[ffmpeg] cmd:", cmd);
       })
-      .on("error", (error) => reject(error))
-      .on("end", () => resolve("Done"))
+      .on("error", (error) =>{
+        console.log("[ffmpeg.ts] reduceSize error", error)
+        reject("❌ Error in reducing size")
+      })      .on("end", () => resolve("Done"))
       .run();
   });
   console.log("[ffmpeg.ts] ✅ Done with reducing size");
@@ -115,8 +117,10 @@ export async function trimVideo(payload: {
       .setDuration(payload.endTime)
       .on("start", () => console.log("➡️ video trimming started..."))
       .on("end", () => resolve("✅ Video trimmed"))
-      .on("error", () => reject("❌ Error in video trimming"))
-      .save(outputPath);
+      .on("error", (error) =>{
+        console.log("[ffmpeg.ts] trimVideo error", error)
+        reject("❌ Error in trimming video")
+      })      .save(outputPath);
   });
 
   return outputPath;
@@ -134,8 +138,10 @@ export async function removeAudio(payload: {
       .noAudio()
       .on("start", () => console.log("➡️ removing audio started..."))
       .on("end", () => resolve("✅ Audio removed"))
-      .on("error", () => reject("❌ Error in removing audio"))
-      .save(outputPath);
+      .on("error", (error) =>{
+        console.log("[ffmpeg.ts] removeAudio error", error)
+        reject("❌ Error in removing audio")
+      })      .save(outputPath);
   });
 
   return outputPath;
@@ -155,7 +161,10 @@ export async function extractAudio(payload: {
       .format('mp3')
       .on("start", () => console.log("➡️ extracting audio started..."))
       .on("end", () => resolve("✅ Audio extracted"))
-      .on("error", () => reject("❌ Error in extracting audio"))
+      .on("error", (error) =>{
+        console.log("[ffmpeg.ts] extractAudio error", error)
+        reject("❌ Error in extracting audio")
+      })
       .save(outputPath);
   });
 
@@ -175,7 +184,10 @@ export async function modifySpeed(
       .outputOptions([
         "-filter:v", `setpts=${payload.pts}*PTS`
       ])
-      .on("error", (error) => reject(error))
+      .on("error", (error) => {
+        console.log('[ffmpeg.ts] modifySpeed error', error)
+        reject(error)
+      })
       .on("end", () => resolve("Done"))
       .save(outputPath);
   });
