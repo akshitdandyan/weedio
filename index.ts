@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { resolve } from "path";
-// import "./controllers/telegramControllers";
+import "./controllers/telegramControllers";
 
 const app = express();
 
